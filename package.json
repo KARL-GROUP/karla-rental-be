@@ -4,12 +4,14 @@
    "description": "",
    "main": "app.js",
    "scripts": {
-      "build": "tsc",
+      "build": "tsc -p .",
       "test": "echo \"Error: no test specified\" && exit 1",
       "start": "ts-node src/app.ts",
       "start:dev": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
       "dev": "nodemon -w *.ts src/app.ts",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "typeorm": "typeorm-ts-node-commonjs -d ./src/utils/data-source.ts",
+      "migrate": "rm -rf build && npm run build && npm run typeorm migration:generate ./src/migrations/added-entity",
+      "db:push": "rm -rf build && npm run build && npm run typeorm migration:run"
    },
    "keywords": [],
    "author": "",
