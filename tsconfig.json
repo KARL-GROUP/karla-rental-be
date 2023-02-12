@@ -2,14 +2,21 @@
    "compilerOptions": {
       "lib": [
          "es5",
-         "es6"
+         "es6",
+         "ES2020"
       ],
-      "target": "es5",
-      "module": "commonjs",
+      "target": "ES2020",
+      "module": "CommonJS",
       "moduleResolution": "node",
+      "strict": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
       "outDir": "./build",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "sourceMap": true
+      "strictPropertyInitialization": false,
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "rootDir": "."
    }
 }
