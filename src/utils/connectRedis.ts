@@ -1,3 +1,5 @@
+require('dotenv').config()
+import 'reflect-metadata';
 import { createClient } from 'redis';
 import config from 'config';
 
