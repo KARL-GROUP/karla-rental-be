@@ -13,6 +13,10 @@ const validateEnv = () => {
     JWT_ACCESS_TOKEN_PUBLIC_KEY: str(),
     JWT_REFRESH_TOKEN_PRIVATE_KEY: str(),
     JWT_REFRESH_TOKEN_PUBLIC_KEY: str(),
+    REDIS_HOST:str(),
+    REDIS_USER:str(),
+    REDIS_PORT:port(),
+    REDIS_PASSWORD:str(),
   });
 };
 
