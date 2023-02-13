@@ -1,7 +1,7 @@
 export default {
   port: 'PORT',
   postgresConfig: {
-    host: 'POSTGRES_HOST',
+    host: 'POSTGRES_HOST' || '0.0.0.0',
     port: 'POSTGRES_PORT',
     username: 'POSTGRES_USER',
     password: 'POSTGRES_PASSWORD',
