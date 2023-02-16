@@ -17,6 +17,7 @@ const validateEnv = () => {
     REDIS_USER:str(),
     REDIS_PORT:port(),
     REDIS_PASSWORD:str(),
+    REDIS_URL:str(),
   });
 };
 

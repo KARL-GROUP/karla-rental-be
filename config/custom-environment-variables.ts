@@ -1,5 +1,6 @@
 export default {
   port: 'PORT',
+  redisURL: 'REDIS_URL',
   postgresConfig: {
     host: 'POSTGRES_HOST' || '0.0.0.0',
     port: 'POSTGRES_PORT',
@@ -7,12 +8,10 @@ export default {
     password: 'POSTGRES_PASSWORD',
     database: 'POSTGRES_DB',
   },
-  redisConfig:{
-    host: 'REDIS_HOST',
-    user: 'REDIS_USER',
-    password: 'REDIS_PASSWORD',
-    port: 'REDIS_PORT',
-  },
+  redisHost: 'REDIS_HOST',
+  redisUser: 'REDIS_USER',
+  redisPassword: 'REDIS_PASSWORD',
+  redisPort: 'REDIS_PORT',
   accessTokenPrivateKey: 'JWT_ACCESS_TOKEN_PRIVATE_KEY',
   accessTokenPublicKey: 'JWT_ACCESS_TOKEN_PUBLIC_KEY',
   refreshTokenPrivateKey: 'JWT_REFRESH_TOKEN_PRIVATE_KEY',

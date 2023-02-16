@@ -3,15 +3,15 @@ import 'reflect-metadata';
 import { createClient } from 'redis';
 import config from 'config';
 
-const redisConfig= config.get<{
-  host: string,
-  user: string,
-  password: string,
-  port: number,
-}>('redisConfig');
+const redisUser= config.get<string>('redisUser');
+const redisPassword= config.get<string>('redisPassword');
+const redisHost= config.get<string>('redisHost');
+const redisPort= config.get<string>('redisPort');
+const redisURL= `redis://${ redisUser }:${ redisPassword }@${ redisHost }:${ redisPort }`;
+
 
 const redisClient = createClient({
-  ...redisConfig
+  url: redisURL,
 });
 
 const connectRedis = async () => {
