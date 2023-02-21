@@ -1,6 +1,5 @@
 export default {
   port: 'PORT',
-  redisURL: 'REDIS_URL',
   postgresConfig: {
     host: 'POSTGRES_HOST' || '0.0.0.0',
     port: 'POSTGRES_PORT',
