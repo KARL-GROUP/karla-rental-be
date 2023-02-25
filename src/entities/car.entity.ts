@@ -13,24 +13,20 @@ export class Car extends Model {
   @Column()
   name: string;
 
+  @Column({
+    nullable: true,
+  })
+  description?: string;
+
   @Column()
-  description: string;
+  plate: string;
 
   @ManyToMany((type) => Category, {
-		cascade: true,
-	})
-	@JoinTable({
-		name: 'car_category',
-		joinColumn: {
-			name: 'car',
-			referencedColumnName: 'id',
-		},
-		inverseJoinColumn: {
-			name: 'category',
-			referencedColumnName: 'name',
-		},
-	})
-	categories: Category[];
+    cascade: true,
+    onDelete: "SET NULL",
+    nullable: true,
+  })
+  categories: Category[];
 
   @Column({
     type: "enum",
@@ -53,8 +49,8 @@ export class Car extends Model {
     type: "simple-array",
     default: [],
   })
-  car_images: string[];
+  car_images?: string[];
 
-  @OneToMany(() => Order, (order) => order.car)
+  @OneToMany(() => Order, (order) => order.car, {})
   orders: Order[];
 }
