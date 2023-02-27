@@ -68,4 +68,4 @@ export const createCarSchema = object({
   }),
 });
 
-export type createCarInput = TypeOf<typeof createCarDBSchema>["body"];
+export type CreateCarInput = TypeOf<typeof createCarDBSchema>["body"];

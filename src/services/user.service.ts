@@ -1,6 +1,6 @@
 import config from 'config';
 import { User } from '../entities/user.entity';
-import { CreateUserInput } from '../schemas/user.schema';
+import { ChangePasswordInput, CreateUserInput } from '../schemas/user.schema';
 import redisClient from '../utils/connectRedis';
 import { AppDataSource } from '../utils/data-source';
 import { signJwt } from '../utils/jwt';
@@ -19,6 +19,14 @@ export const findUserByEmail = async ({ email }: { email: string }) => {
 
 export const findUserById = async (userId: string) => {
   return await userRepository.findOneBy({ id: userId });
+};
+
+export const updateUser = async (user: User, update: Partial<ChangePasswordInput>) => {
+  const newUser = userRepository.create({
+    ...user,
+    ...update,
+  }); 
+  return await userRepository.save(newUser);
 };
 
 export const findUser = async (query: Object) => {

@@ -24,6 +24,19 @@ export const createUserSchema = object({
   }),
 });
 
+export const changePasswordSchema = object({
+  body: object({
+    password: string({
+      required_error: 'Password is required',
+    })
+      .min(8, 'Password must be more than 8 characters')
+      .max(32, 'Password must be less than 32 characters'),
+    passwordConfirm: string({
+      required_error: 'Please confirm your password',
+    }),
+  })
+})
+
 export const loginUserSchema = object({
   body: object({
     email: string({
@@ -41,4 +54,7 @@ export type CreateUserInput = Omit<
 >;
 
 export type LoginUserInput = TypeOf<typeof loginUserSchema>['body'];
+
+
+export type ChangePasswordInput = TypeOf<typeof changePasswordSchema>['body'];
 

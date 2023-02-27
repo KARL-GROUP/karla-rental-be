@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  changePasswordHandler,
   loginUserHandler,
   logoutHandler,
   refreshAccessTokenHandler,
@@ -8,7 +9,7 @@ import {
 import { deserializeUser } from '../middleware/deserializeUser';
 import { requireUser } from '../middleware/requireUser';
 import { validate } from '../middleware/validate';
-import { createUserSchema, loginUserSchema } from '../schemas/user.schema';
+import { changePasswordSchema, createUserSchema, loginUserSchema } from '../schemas/user.schema';
 
 const router = express.Router();
 
@@ -17,6 +18,9 @@ router.post('/register', validate(createUserSchema), registerUserHandler);
 
 // Login user
 router.post('/login', validate(loginUserSchema), loginUserHandler);
+
+// ChangePassword
+router.put('/changepassword', validate(changePasswordSchema), deserializeUser, requireUser, changePasswordHandler);
 
 // Logout user
 router.get('/logout', deserializeUser, requireUser, logoutHandler);
