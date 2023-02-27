@@ -1,9 +1,18 @@
+require('dotenv').config()
+import 'reflect-metadata';
 import { createClient } from 'redis';
+import config from 'config';
 
-const redisUrl = 'redis://localhost:6379';
+const redisUser= config.get<string>('redisUser');
+const redisPassword= config.get<string>('redisPassword');
+const redisHost= config.get<string>('redisHost');
+const redisPort= config.get<string>('redisPort');
+const redisURL= `redis://${ redisUser }:${ redisPassword }@${ redisHost }:${ redisPort }`;
+
+// const redisURL = 'redis://localhost:6379';
 
 const redisClient = createClient({
-  url: redisUrl,
+  url: redisURL,
 });
 
 const connectRedis = async () => {
