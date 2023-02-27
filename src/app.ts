@@ -10,6 +10,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
 import categoryRouter from "./routes/category.routes";
+import carRouter from "./routes/car.routes";
 import AppError from "./utils/appError";
 import { categoryRepository } from "./services/category.service";
 
@@ -23,7 +24,7 @@ AppDataSource.initialize()
     // MIDDLEWARE
 
     // 1. Body parser
-    app.use(express.json({ limit: "10kb" }));
+    app.use(express.json());
 
     // 2. Logger
     if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
@@ -42,6 +43,7 @@ AppDataSource.initialize()
     app.use("/api/auth", authRouter);
     app.use("/api/users", userRouter);
     app.use("/api/categories", categoryRouter);
+    app.use("/api/car", carRouter);
 
     // HEALTH CHECKER
     app.get("/api/healthchecker", async (_, res: Response) => {

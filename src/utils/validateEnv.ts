@@ -17,6 +17,10 @@ const validateEnv = () => {
     REDIS_USER:str(),
     REDIS_PORT:port(),
     REDIS_PASSWORD:str(),
+    CLOUDINARY_NAME:str(),
+    CLOUDINARY_API_KEY:str(),
+    CLOUDINARY_API_SECRET:str(),
+
   });
 };
 

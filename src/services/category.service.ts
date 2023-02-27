@@ -23,7 +23,3 @@ export const findCategory = async (query: Object) => {
 export const getCategories = async() =>{
   return await categoryRepository.find() as Category[];
 };
-
-export const deleteCategory = async(category: Category) => {
-  return await categoryRepository.remove(category);
-}

@@ -7,9 +7,11 @@ import { createCategorySchema } from '../schemas/category.schema';
 
 const router = express.Router();
 
-router.post('/create', validate(createCategorySchema), createCategoryHandler);
-
 router.get('/', getCategoriesHandler);
+
+router.use(deserializeUser, requireUser);
+
+router.post('/create', validate(createCategorySchema), createCategoryHandler);
 
 router.delete('/delete/:name', deleteCategoryHandler);
 

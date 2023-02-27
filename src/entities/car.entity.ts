@@ -14,9 +14,10 @@ export class Car extends Model {
   name: string;
 
   @Column({
+    type: "text",
     nullable: true,
   })
-  description?: string;
+  description!: string | null;
 
   @Column()
   plate: string;
@@ -35,10 +36,8 @@ export class Car extends Model {
   })
   transmission: string;
 
-  @Column({
-    type: "numeric",
-  })
-  price: number;
+  @Column()
+  price: string;
 
   @Column({
     type: "numeric",
@@ -46,11 +45,19 @@ export class Car extends Model {
   seats: number;
 
   @Column({
-    type: "simple-array",
-    default: [],
+    type: "jsonb",
+    array: true,
+    default: () => "ARRAY[]::jsonb[]",
   })
-  car_images?: string[];
+  car_images: Array<{
+    public_id: string;
+    url: string;
+  }> = [];
 
-  @OneToMany(() => Order, (order) => order.car, {})
+  @OneToMany(() => Order, (order) => order.car, {
+    nullable: true,
+    onUpdate: "CASCADE",
+    onDelete: "NO ACTION",
+  })
   orders: Order[];
 }

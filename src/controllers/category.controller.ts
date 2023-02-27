@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Category } from "../entities/category.entity";
-import { createCategory, deleteCategory, findCategoryByName, getCategories } from "../services/category.service";
+import { createCategory, findCategoryByName, getCategories } from "../services/category.service";
 import AppError from "../utils/appError";
 
 export const createCategoryHandler = async (

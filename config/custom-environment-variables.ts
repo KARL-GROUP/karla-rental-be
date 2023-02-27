@@ -15,5 +15,8 @@ export default {
   accessTokenPublicKey: 'JWT_ACCESS_TOKEN_PUBLIC_KEY',
   refreshTokenPrivateKey: 'JWT_REFRESH_TOKEN_PRIVATE_KEY',
   refreshTokenPublicKey: 'JWT_REFRESH_TOKEN_PUBLIC_KEY',
+  cloudinaryName: 'CLOUDINARY_NAME',
+  cloudinaryAPIKey: 'CLOUDINARY_API_KEY',
+  cloudinaryAPISecret: 'CLOUDINARY_API_SECRET',
 };
 
