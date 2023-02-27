@@ -43,7 +43,7 @@ AppDataSource.initialize()
     app.use("/api/auth", authRouter);
     app.use("/api/users", userRouter);
     app.use("/api/categories", categoryRouter);
-    app.use("/api/car", carRouter);
+    app.use("/api/cars", carRouter);
 
     // HEALTH CHECKER
     app.get("/api/healthchecker", async (_, res: Response) => {

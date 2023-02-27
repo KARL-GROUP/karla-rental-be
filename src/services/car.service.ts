@@ -15,6 +15,10 @@ export const findCarById = async (carId: string) => {
   return await carRepository.findOneBy({id: carId});
 };
 
-export const findCar =async (query:object) => {
+export const findCars =async (query:object) => {
   return await carRepository.findBy(query);
+}
+
+export const findCar =async (query:object) => {
+  return await carRepository.findOneBy(query);
 }

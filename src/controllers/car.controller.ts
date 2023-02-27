@@ -1,7 +1,21 @@
 import { Request, Response, NextFunction } from "express";
-import { createCar, findCarById } from "../services/car.service";
+import { createCar, findCars, findCarById } from "../services/car.service";
 import AppError from "../utils/appError";
 import cloudinary from "../utils/cloudinary";
+
+export const getCarsHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const cars = await findCars({});
+
+    res.status(200).send(cars);
+  } catch (err: any) {
+    next(err);
+  }
+};
 
 export const createCarHandler = async (
   req: Request,
