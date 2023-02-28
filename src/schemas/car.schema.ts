@@ -3,11 +3,27 @@ import { TransmissionTypes } from "../entities/car.entity";
 import { categoryRepository } from "../services/category.service";
 
 const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
+  "Image/jpeg",
+  "Image/jpg",
+  "Image/png",
+  "Image/webp",
 ];
+
+export const imageFileSchema = z.custom<FileList>().superRefine((f, ctx) => {
+  // First, add an issue if the mime type is wrong.
+  console.log(f);
+  if (!ACCEPTED_IMAGE_TYPES.includes(f[0].type)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `File must be one of [${ACCEPTED_IMAGE_TYPES.join(
+        ", "
+      )}] but was ${f[0].type}`
+    });
+  }
+}); 
+
+
+const MAX_FILE_SIZE = 500000;
 
 export const imageSchema = object({
   public_id: string({
@@ -31,9 +47,7 @@ export const createCarDBSchema = object({
     price: string({
       required_error: "Price is required",
     }),
-    seats: number({
-      required_error: "Number of seats is missing",
-    }).positive(),
+    seats: string(),
     category: string().array().nullable().optional(),
     carImages: imageSchema.array(),
   }),
@@ -52,19 +66,14 @@ export const createCarSchema = object({
     price: string({
       required_error: "Price is required",
     }),
-    seats: number({
-      required_error: "Number of seats is missing",
-    }).positive(),
+    seats: string().optional().nullable(),
     category: string().array().nullable().optional(),
-    carImages: any()
-      .array()
-      .nonempty({
-        message: "There has to be at least one image",
-      })
-      .refine(
-        (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
-        "Only .jpg, .jpeg, .png and .webp formats are supported."
-      ),
+    image: any().nullable().optional(),
+    // carImages: any()
+    //   .refine(
+    //     (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+    //     "Only .jpg, .jpeg, .png and .webp formats are supported."
+    //   ),
   }),
 });
 

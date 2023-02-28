@@ -31,21 +31,22 @@ export const createCarHandler = async (
       price,
       seats,
       category,
-      carImages,
     } = req.body;
 
     var uploads: any = [];
-    for (var image of carImages) {
-      const upload = await cloudinary.uploader.upload(image, {
+
+    for (const image of (req.files as Express.Multer.File[])) {
+      const imageUpload = await cloudinary.uploader.upload(image.path, {
         folder: "karl-rental/cars",
       });
 
-      console.log(upload);
+      // console.log(imageUpload);
       uploads.push({
-        public_id: upload.public_id,
-        url: upload.secure_url,
+        public_id: imageUpload.public_id,
+        url: imageUpload.secure_url,
       });
     }
+    console.log(uploads);
     const car = await createCar({
       name,
       description,
@@ -80,9 +81,11 @@ export const deleteCarHandler = async (
       return next(new AppError(404, "Category with that name not found"));
     }
 
-    if (car.car_images.length != 0) {
-      for (var image of car.car_images) {
-        cloudinary.uploader.destroy(image.public_id);
+    // const images = JSON.parse(car.carImages);
+
+    if (car.carImages.length != 0) {
+      for (var image of car.carImages) {
+        // cloudinary.uploader.destroy(image.public_id);
       }
     }
 

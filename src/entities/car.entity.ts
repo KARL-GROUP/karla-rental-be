@@ -42,17 +42,18 @@ export class Car extends Model {
   @Column({
     type: "numeric",
   })
-  seats: number;
+  seats: number | string;
 
   @Column({
     type: "jsonb",
-    array: true,
-    default: () => "ARRAY[]::jsonb[]",
+    array: false,
+    default: () => "'[]'",
+    nullable: false,
   })
-  car_images: Array<{
+  carImages: Array<{
     public_id: string;
     url: string;
-  }> = [];
+  }>;
 
   @OneToMany(() => Order, (order) => order.car, {
     nullable: true,

@@ -3,7 +3,9 @@
       "lib": [
          "es5",
          "es6",
-         "ES2020"
+         "ES2020",
+         "DOM",
+         "DOM.Iterable"
       ],
       "target": "ES2020",
       "module": "CommonJS",

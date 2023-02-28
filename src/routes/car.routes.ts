@@ -2,6 +2,7 @@ import express from "express";
 import { createCarHandler, deleteCarHandler, getCarsHandler } from "../controllers/car.controller";
 import { validate } from "../middleware/validate";
 import { createCarSchema } from "../schemas/car.schema";
+import upload from "../utils/multer";
 
 const router = express.Router();
 

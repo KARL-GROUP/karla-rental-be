@@ -12,6 +12,8 @@ import userRouter from "./routes/user.routes";
 import categoryRouter from "./routes/category.routes";
 import carRouter from "./routes/car.routes";
 import AppError from "./utils/appError";
+import upload from './utils/multer';
+import bodyParser from 'body-parser';
 import { categoryRepository } from "./services/category.service";
 
 AppDataSource.initialize()
@@ -24,7 +26,11 @@ AppDataSource.initialize()
     // MIDDLEWARE
 
     // 1. Body parser
-    app.use(express.json());
+    app.use(bodyParser.urlencoded({
+      extended: true,
+    }));
+    app.use(bodyParser.json());
+    app.use(upload.any());
 
     // 2. Logger
     if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
