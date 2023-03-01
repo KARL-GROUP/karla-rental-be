@@ -4,6 +4,7 @@ import { createCar, findCars, findCarById } from "../services/car.service";
 import { findCategoryByName } from "../services/category.service";
 import AppError from "../utils/appError";
 import cloudinary from "../utils/cloudinary";
+import * as fs from 'fs';
 
 export const getCarsHandler = async (
   req: Request,
@@ -47,6 +48,8 @@ export const createCarHandler = async (
         public_id: imageUpload.public_id,
         url: imageUpload.secure_url,
       });
+
+      fs.unlinkSync(image.path);
     }
     // console.log(uploads);
     // console.log(categories);
