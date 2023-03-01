@@ -17,16 +17,5 @@ export class Category extends BaseEntity {
     cascade: true,
     onDelete: "NO ACTION",
   })
-  @JoinTable({
-    name: "car_category",
-    joinColumn: {
-      name: "category",
-      referencedColumnName: "name",
-    },
-    inverseJoinColumn: {
-      name: "car",
-      referencedColumnName: "id",
-    },
-  })
   cars: Car[];
 }

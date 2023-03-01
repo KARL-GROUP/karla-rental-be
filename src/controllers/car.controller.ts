@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+import { Category } from "../entities/category.entity";
 import { createCar, findCars, findCarById } from "../services/car.service";
+import { findCategoryByName } from "../services/category.service";
 import AppError from "../utils/appError";
 import cloudinary from "../utils/cloudinary";
 
@@ -30,7 +32,7 @@ export const createCarHandler = async (
       transmission,
       price,
       seats,
-      category,
+      categories,
     } = req.body;
 
     var uploads: any = [];
@@ -46,7 +48,20 @@ export const createCarHandler = async (
         url: imageUpload.secure_url,
       });
     }
-    console.log(uploads);
+    // console.log(uploads);
+    // console.log(categories);
+
+    var assignedCategories = [];
+    for( var category of categories){
+      // console.log(category)
+      const newCategory = await findCategoryByName(category);
+      // console.log(newCategory);
+      if(newCategory)
+      assignedCategories.push(newCategory);
+    }
+
+    // console.log(assignedCategories);
+
     const car = await createCar({
       name,
       description,
@@ -54,7 +69,7 @@ export const createCarHandler = async (
       transmission,
       price,
       seats,
-      category,
+      categories: assignedCategories,
       carImages: uploads,
     });
 

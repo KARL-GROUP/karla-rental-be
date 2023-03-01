@@ -27,6 +27,17 @@ export class Car extends Model {
     onDelete: "SET NULL",
     nullable: true,
   })
+  @JoinTable({
+    name: "car_category",
+    joinColumn: {
+      name: "car",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "category",
+      referencedColumnName: "name",
+    },
+  })
   categories: Category[];
 
   @Column({
@@ -59,6 +70,7 @@ export class Car extends Model {
     nullable: true,
     onUpdate: "CASCADE",
     onDelete: "NO ACTION",
+    cascade: true,
   })
   orders: Order[];
 }

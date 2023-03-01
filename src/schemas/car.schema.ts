@@ -1,5 +1,6 @@
 import { any, array, number, object, string, TypeOf, z } from "zod";
 import { TransmissionTypes } from "../entities/car.entity";
+import { Category } from "../entities/category.entity";
 import { categoryRepository } from "../services/category.service";
 
 const ACCEPTED_IMAGE_TYPES = [
@@ -21,9 +22,6 @@ export const imageFileSchema = z.custom<FileList>().superRefine((f, ctx) => {
     });
   }
 }); 
-
-
-const MAX_FILE_SIZE = 500000;
 
 export const imageSchema = object({
   public_id: string({
@@ -48,7 +46,7 @@ export const createCarDBSchema = object({
       required_error: "Price is required",
     }),
     seats: string(),
-    category: string().array().nullable().optional(),
+    categories: any().array().optional(),
     carImages: imageSchema.array(),
   }),
 });
@@ -68,12 +66,7 @@ export const createCarSchema = object({
     }),
     seats: string().optional().nullable(),
     category: string().array().nullable().optional(),
-    image: any().nullable().optional(),
-    // carImages: any()
-    //   .refine(
-    //     (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-    //     "Only .jpg, .jpeg, .png and .webp formats are supported."
-    //   ),
+    carImages: any().nullable().optional(),
   }),
 });
 
