@@ -2,6 +2,7 @@ import { any, array, number, object, string, TypeOf, z } from "zod";
 import { TransmissionTypes } from "../entities/car.entity";
 import { Category } from "../entities/category.entity";
 import { categoryRepository } from "../services/category.service";
+import { toNumber } from "../utils/zod";
 
 const ACCEPTED_IMAGE_TYPES = [
   "Image/jpeg",
@@ -18,10 +19,10 @@ export const imageFileSchema = z.custom<FileList>().superRefine((f, ctx) => {
       code: z.ZodIssueCode.custom,
       message: `File must be one of [${ACCEPTED_IMAGE_TYPES.join(
         ", "
-      )}] but was ${f[0].type}`
+      )}] but was ${f[0].type}`,
     });
   }
-}); 
+});
 
 export const imageSchema = object({
   public_id: string({
@@ -68,6 +69,18 @@ export const createCarSchema = object({
     category: string().array().nullable().optional(),
     carImages: any().nullable().optional(),
   }),
+});
+
+export const getCarsQuerySchema = object({
+  query: object({
+    name: string().optional(),
+    categories: string().array().optional(),
+    transmission: z.nativeEnum(TransmissionTypes).optional(),
+    seats: z.preprocess(toNumber, z.number().optional()),
+    price: z.preprocess(toNumber, z.number().optional()),
+  })
+    .optional()
+    .nullable(),
 });
 
 export type CreateCarInput = TypeOf<typeof createCarDBSchema>["body"];

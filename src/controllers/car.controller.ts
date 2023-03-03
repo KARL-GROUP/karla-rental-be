@@ -4,7 +4,16 @@ import { createCar, findCars, findCarById } from "../services/car.service";
 import { findCategoryByName } from "../services/category.service";
 import AppError from "../utils/appError";
 import cloudinary from "../utils/cloudinary";
-import * as fs from 'fs';
+import * as fs from "fs";
+import { Car } from "../entities/car.entity";
+import { toNumber } from "../utils/zod";
+import {
+  LessThan,
+  LessThanOrEqual,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+} from "typeorm";
 
 export const getCarsHandler = async (
   req: Request,
@@ -12,7 +21,37 @@ export const getCarsHandler = async (
   next: NextFunction
 ) => {
   try {
-    const cars = await findCars({});
+    var cars: Car[];
+    if (Object.keys(req.query).length) {
+      var options: any = req.query;
+      Object.keys(options).forEach(async (key, index) => {
+        if (key != "categories")
+          if (toNumber(options[key])) {
+            if (key == "seats") options[key] = MoreThanOrEqual(options[key]);
+            else options[key] = LessThanOrEqual(options[key]);
+          } else {
+            if (key != "transmission") options[key] = Like(`%${options[key]}%`);
+          }
+      });
+
+      const queryCategories = options.categories;
+
+      delete options.categories;
+
+      cars = await findCars(options);
+
+      if (queryCategories) {
+        cars = cars.filter((car) =>
+          car.categories.some((category) =>
+            queryCategories.includes(category.name)
+          )
+        );
+
+        console.log(cars);
+      }
+    } else {
+      cars = await findCars({});
+    }
 
     res.status(200).send(cars);
   } catch (err: any) {
@@ -26,44 +65,33 @@ export const createCarHandler = async (
   next: NextFunction
 ) => {
   try {
-    const {
-      name,
-      description,
-      plate,
-      transmission,
-      price,
-      seats,
-      categories,
-    } = req.body;
+    const { name, description, plate, transmission, price, seats, categories } =
+      req.body;
 
     var uploads: any = [];
 
-    for (const image of (req.files as Express.Multer.File[])) {
-      const imageUpload = await cloudinary.uploader.upload(image.path, {
-        folder: "karl-rental/cars",
-      });
+    if (req.files) {
+      for (const image of req.files as Express.Multer.File[]) {
+        const imageUpload = await cloudinary.uploader.upload(image.path, {
+          folder: "karl-rental/cars",
+        });
 
-      // console.log(imageUpload);
-      uploads.push({
-        public_id: imageUpload.public_id,
-        url: imageUpload.secure_url,
-      });
+        uploads.push({
+          public_id: imageUpload.public_id,
+          url: imageUpload.secure_url,
+        });
 
-      fs.unlinkSync(image.path);
+        fs.unlinkSync(image.path);
+      }
     }
-    // console.log(uploads);
-    // console.log(categories);
 
     var assignedCategories = [];
-    for( var category of categories){
-      // console.log(category)
-      const newCategory = await findCategoryByName(category);
-      // console.log(newCategory);
-      if(newCategory)
-      assignedCategories.push(newCategory);
+    if (categories) {
+      for (var category of categories) {
+        const newCategory = await findCategoryByName(category);
+        if (newCategory) assignedCategories.push(newCategory);
+      }
     }
-
-    // console.log(assignedCategories);
 
     const car = await createCar({
       name,

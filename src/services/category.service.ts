@@ -2,7 +2,6 @@ import { Category } from "../entities/category.entity";
 import { AppDataSource } from "../utils/data-source";
 import { CreateCategoryInput } from "../schemas/category.schema";
 
-
 // export const createCar = async (params: type) => {};
 export const categoryRepository = AppDataSource.getRepository(Category);
 
@@ -20,6 +19,6 @@ export const findCategory = async (query: Object) => {
   return await categoryRepository.findOneBy(query);
 };
 
-export const getCategories = async() =>{
-  return await categoryRepository.find() as Category[];
+export const getCategories = async () => {
+  return (await categoryRepository.find()) as Category[];
 };

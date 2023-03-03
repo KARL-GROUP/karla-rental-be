@@ -1,9 +1,12 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
 import { Car } from "./car.entity";
+import Model from "./model.entity";
 
 @Entity("categories")
-export class Category extends BaseEntity {
-  @PrimaryColumn()
+export class Category extends Model {
+  @Column({
+    unique: true
+  })
   name: string;
 
   @Column({

@@ -1,4 +1,4 @@
-import multer from 'multer';
+import multer from "multer";
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -8,26 +8,32 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb){
-    cb(null, './uploads/')
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
   },
-  filename: function(req, file, cb){
-    cb(null, new Date().toISOString() + '-' +file.originalname);
-  }
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
 });
 
-const fileFilter = (req: any,file: any, cb: any) =>{
-  if(ACCEPTED_IMAGE_TYPES.includes(file.mimetype)){
-    cb(null,true)
-  }else{
-    cb({message: 'Unsupported file format'}, false);
+const fileFilter = (req: any, file: any, cb: any) => {
+  if (ACCEPTED_IMAGE_TYPES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(
+      {
+        message: `Unsupported file format! File must be one of [${ACCEPTED_IMAGE_TYPES.join(
+          ", "
+        )}]`,
+      },
+      false
+    );
   }
-
-}
+};
 
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-})
+});
 
 export default upload;
