@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { Category } from "../entities/category.entity";
 import { createCar, findCars, findCarById } from "../services/car.service";
 import { findCategoryByName } from "../services/category.service";
 import AppError from "../utils/appError";
@@ -8,10 +7,8 @@ import * as fs from "fs";
 import { Car } from "../entities/car.entity";
 import { toNumber } from "../utils/zod";
 import {
-  LessThan,
   LessThanOrEqual,
   Like,
-  MoreThan,
   MoreThanOrEqual,
 } from "typeorm";
 
