@@ -19,6 +19,10 @@ export const findCategory = async (query: Object) => {
   return await categoryRepository.findOneBy(query);
 };
 
+export const findCategoryById = async (categoryId: string) => {
+  return await categoryRepository.findOneBy({ id: categoryId });
+};
+
 export const getCategories = async () => {
   return (await categoryRepository.find()) as Category[];
 };

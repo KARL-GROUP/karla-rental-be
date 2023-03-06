@@ -12,8 +12,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const imageFileSchema = z.custom<FileList>().superRefine((f, ctx) => {
-  // First, add an issue if the mime type is wrong.
-  console.log(f);
+  // console.log(f);
   if (!ACCEPTED_IMAGE_TYPES.includes(f[0].type)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -43,10 +42,12 @@ export const createCarDBSchema = object({
       required_error: "Car's plate number is required",
     }),
     transmission: z.nativeEnum(TransmissionTypes),
-    price: string({
+    price: number({
       required_error: "Price is required",
     }),
-    seats: string(),
+    seats: number({
+      required_error: "Number of seats is required",
+    }),
     categories: any().array().optional(),
     carImages: imageSchema.array(),
   }),
@@ -62,10 +63,12 @@ export const createCarSchema = object({
       required_error: "Car's plate number is required",
     }),
     transmission: z.nativeEnum(TransmissionTypes),
-    price: string({
-      required_error: "Price is required",
-    }),
-    seats: string().optional().nullable(),
+    price: z.preprocess(toNumber, z.number({
+      required_error:"Price is required"
+    })),
+    seats: z.preprocess(toNumber, z.number({
+      required_error:"Number of seats is required"
+    })),
     category: string().array().nullable().optional(),
     carImages: any().nullable().optional(),
   }),

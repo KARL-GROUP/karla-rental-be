@@ -1,4 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { BeforeRemove, Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import cloudinary from "../utils/cloudinary";
 import { Category } from "./category.entity";
 import Model from "./model.entity";
 import { Order } from "./order.entity";
@@ -19,10 +20,12 @@ export class Car extends Model {
   })
   description!: string | null;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   plate: string;
 
-  @ManyToMany((type) => Category, {
+  @ManyToMany(() => Category, (category) => category.cars,{
     cascade: true,
     onDelete: "SET NULL",
     nullable: true,
@@ -35,7 +38,7 @@ export class Car extends Model {
     },
     inverseJoinColumn: {
       name: "category",
-      referencedColumnName: "name",
+      referencedColumnName: "id",
     },
   })
   categories: Category[];
@@ -47,13 +50,16 @@ export class Car extends Model {
   })
   transmission: string;
 
-  @Column()
-  price: string;
+  @Column({
+    type: "numeric",
+    default: 50
+  })
+  price: number;
 
   @Column({
     type: "numeric",
   })
-  seats: number | string;
+  seats: number;
 
   @Column({
     type: "jsonb",
@@ -73,4 +79,13 @@ export class Car extends Model {
     cascade: true,
   })
   orders: Order[];
+
+  @BeforeRemove()
+  async deleteImages(){
+    if (this.carImages.length != 0) {
+      for (var image of this.carImages) {
+        cloudinary.uploader.destroy(image.public_id);
+      }
+    }
+  }
 }

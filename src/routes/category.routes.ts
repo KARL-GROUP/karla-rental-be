@@ -13,7 +13,7 @@ router.use(deserializeUser, requireUser);
 
 router.post('/create', validate(createCategorySchema), createCategoryHandler);
 
-router.delete('/delete/:name', deleteCategoryHandler);
+router.delete('/delete/:id', deleteCategoryHandler);
 
 export default router;
 

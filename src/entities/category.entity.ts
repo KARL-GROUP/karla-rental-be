@@ -1,24 +1,30 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryColumn,
+} from "typeorm";
 import { Car } from "./car.entity";
 import Model from "./model.entity";
 
 @Entity("categories")
 export class Category extends Model {
   @Column({
-    unique: true
+    unique: true,
   })
   name: string;
 
   @Column({
-    type: 'text',
+    type: "text",
     nullable: true,
-    default: '',
+    default: "",
   })
   description!: string | null;
 
-  @ManyToMany((type) => Car, {
-    cascade: true,
-    onDelete: "NO ACTION",
+  @ManyToMany((type) => Car, (car) => car.categories, {
+    nullable: true,
   })
   cars: Car[];
 }

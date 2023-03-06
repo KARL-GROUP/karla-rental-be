@@ -15,6 +15,8 @@ import AppError from "./utils/appError";
 import upload from './utils/multer';
 import bodyParser from 'body-parser';
 import { categoryRepository } from "./services/category.service";
+import swaggerUi from "swagger-ui-express";
+import swaggerDoc from '../openapi.json';
 
 AppDataSource.initialize()
   .then(async () => {
@@ -45,6 +47,10 @@ AppDataSource.initialize()
         credentials: true,
       })
     );
+
+    // 5. Documentation
+    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
     // ROUTES
     app.use("/api/auth", authRouter);
     app.use("/api/users", userRouter);

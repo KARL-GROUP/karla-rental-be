@@ -118,18 +118,14 @@ export const deleteCarHandler = async (
   next: NextFunction
 ) => {
   try {
+    const carId =  req.params.id;
+    if(!carId){
+      return next(new AppError(400, "No car id provided"));
+    }
     const car = await findCarById(req.params.id);
 
     if (!car) {
-      return next(new AppError(404, "Category with that name not found"));
-    }
-
-    // const images = JSON.parse(car.carImages);
-
-    if (car.carImages.length != 0) {
-      for (var image of car.carImages) {
-        // cloudinary.uploader.destroy(image.public_id);
-      }
+      return next(new AppError(404, "Car with that :id not found"));
     }
 
     await car.remove();

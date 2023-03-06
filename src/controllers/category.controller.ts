@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Category } from "../entities/category.entity";
-import { createCategory, findCategoryByName, getCategories } from "../services/category.service";
+import { createCategory, findCategory, findCategoryById, findCategoryByName, getCategories } from "../services/category.service";
 import AppError from "../utils/appError";
 
 export const createCategoryHandler = async (
@@ -42,10 +42,17 @@ export const deleteCategoryHandler = async (
   next: NextFunction
 ) => {
   try {
-    const category = await findCategoryByName(req.params.name);
+    const categoryId = req.params.id;
+
+    if(!categoryId){
+      return next(new AppError(400, "No category id provided"));
+    }
+
+    const category = await findCategoryByName(categoryId);
+
 
     if (!category) {
-      return next(new AppError(404, 'Category with that name not found'));
+      return next(new AppError(404, 'Category with that id not found'));
     }
 
     await category.remove();
@@ -54,6 +61,7 @@ export const deleteCategoryHandler = async (
       message: `Category deleted`,
     });
   } catch (err: any) {
+    console.log(err);
     next(err);
   }
 };
