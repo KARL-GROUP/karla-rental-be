@@ -1,16 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import { createCar, findCars, findCarById } from "../services/car.service";
-import { findCategoryByName } from "../services/category.service";
+import {
+  createCar,
+  findCars,
+  findCarById,
+  selectionModelYears,
+} from "../services/car.service";
+import { createTag, findTagByName } from "../services/tag.service";
 import AppError from "../utils/appError";
 import cloudinary from "../utils/cloudinary";
 import * as fs from "fs";
 import { Car } from "../entities/car.entity";
 import { toNumber } from "../utils/zod";
-import {
-  LessThanOrEqual,
-  Like,
-  MoreThanOrEqual,
-} from "typeorm";
+import { Equal, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 
 export const getCarsHandler = async (
   req: Request,
@@ -19,39 +20,58 @@ export const getCarsHandler = async (
 ) => {
   try {
     var cars: Car[];
+    var years: number[];
     if (Object.keys(req.query).length) {
       var options: any = req.query;
+
+      const querytags = options.tags;
+
+      delete options.tags;
+
       Object.keys(options).forEach(async (key, index) => {
-        if (key != "categories")
-          if (toNumber(options[key])) {
-            if (key == "seats") options[key] = MoreThanOrEqual(options[key]);
-            else options[key] = LessThanOrEqual(options[key]);
-          } else {
-            if (key != "transmission") options[key] = Like(`%${options[key]}%`);
-          }
+        if (key in ["brand", "model", "type"]) {
+          options[key] = Like(`%${options[key]}%`);
+        }
+        if (key in ["year", "maxPrice"]) {
+          options[key] = LessThanOrEqual(options[key]);
+        }
+        if (key in ["minPrice", "seats"]) {
+          options[key] = MoreThanOrEqual(options[key]);
+        }
+        if (key in ["display", "transmission"]) {
+          options[key] = Equal(options[key]);
+        }
       });
 
-      const queryCategories = options.categories;
-
-      delete options.categories;
-
       cars = await findCars(options);
+      delete options.year;
+      delete options.minPrice;
+      delete options.maxPrice;
+      years = (await selectionModelYears(options)).map(
+        (val) => val.year as number
+      );
 
-      if (queryCategories) {
+      if (querytags) {
         cars = cars.filter((car) =>
-          car.categories.some((category) =>
-            queryCategories.includes(category.name)
-          )
+          car.tags.some((tag) => querytags.includes(tag.name))
         );
 
         console.log(cars);
       }
     } else {
       cars = await findCars({});
+      years = (await selectionModelYears({})).map((val) => val.year as number);
     }
 
-    res.status(200).send(cars);
+    res.status(200).json({
+      staus: "success",
+      data: {
+        cars: cars,
+        years: years,
+      },
+    });
   } catch (err: any) {
+    console.log(err);
     next(err);
   }
 };
@@ -62,9 +82,6 @@ export const createCarHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { name, description, plate, transmission, price, seats, categories } =
-      req.body;
-
     var uploads: any = [];
 
     if (req.files) {
@@ -82,22 +99,22 @@ export const createCarHandler = async (
       }
     }
 
-    var assignedCategories = [];
-    if (categories) {
-      for (var category of categories) {
-        const newCategory = await findCategoryByName(category);
-        if (newCategory) assignedCategories.push(newCategory);
+    var assignedTags = [];
+    if (req.body.tags) {
+      for (var tag of req.body.tags) {
+        const newTag = await findTagByName(tag);
+        if (newTag) assignedTags.push(newTag);
+        else {
+          const createdTag = await createTag({ name: tag });
+          assignedTags.push(createdTag);
+        }
       }
     }
 
     const car = await createCar({
-      name,
-      description,
-      plate,
-      transmission,
-      price,
-      seats,
-      categories: assignedCategories,
+      ...req.body,
+      tags: assignedTags,
+      coverImage: uploads[uploads.length - 1],
       carImages: uploads,
     });
 
@@ -118,8 +135,8 @@ export const deleteCarHandler = async (
   next: NextFunction
 ) => {
   try {
-    const carId =  req.params.id;
-    if(!carId){
+    const carId = req.params.id;
+    if (!carId) {
       return next(new AppError(400, "No car id provided"));
     }
     const car = await findCarById(req.params.id);

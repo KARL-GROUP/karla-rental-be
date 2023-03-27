@@ -9,14 +9,14 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
-import categoryRouter from "./routes/category.routes";
+import tagRouter from "./routes/tag.routes";
 import carRouter from "./routes/car.routes";
 import AppError from "./utils/appError";
-import upload from './utils/multer';
-import bodyParser from 'body-parser';
-import { categoryRepository } from "./services/category.service";
+import upload from "./utils/multer";
+import bodyParser from "body-parser";
+import { carRepository } from "./services/car.service";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from '../openapi.json';
+import swaggerDoc from "../openapi.json";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -28,9 +28,11 @@ AppDataSource.initialize()
     // MIDDLEWARE
 
     // 1. Body parser
-    app.use(bodyParser.urlencoded({
-      extended: true,
-    }));
+    app.use(
+      bodyParser.urlencoded({
+        extended: true,
+      })
+    );
     app.use(bodyParser.json());
     app.use(upload.any());
 
@@ -49,12 +51,12 @@ AppDataSource.initialize()
     );
 
     // 5. Documentation
-    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+    app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
     // ROUTES
     app.use("/api/auth", authRouter);
     app.use("/api/users", userRouter);
-    app.use("/api/categories", categoryRouter);
+    app.use("/api/tags", tagRouter);
     app.use("/api/cars", carRouter);
 
     // HEALTH CHECKER
@@ -67,12 +69,14 @@ AppDataSource.initialize()
     });
 
     app.get("/api/trial", async (_, res: Response) => {
-      const categories = await categoryRepository
+      const years = await carRepository
         .createQueryBuilder()
-        .select(["Category.name"])
-        .getRawMany();
+        .select("Car.year")
+        .distinctOn(['Car.year'])
+        .getMany();
 
-      return categories;
+      res.status(200).send(years.map((val) => val.year));
+      // return years;
     });
 
     // UNHANDLED ROUTE

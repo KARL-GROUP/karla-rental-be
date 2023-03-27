@@ -33,15 +33,8 @@ export class User extends Model {
     })
     verified: boolean;
 
-    private tempPassword: string;
-
     toJSON() {
         return { ...this, password: undefined, verified: undefined, tempPassword: undefined };
-    }
-
-    @AfterLoad()
-    private loadTempPassword(): void {
-        this.tempPassword = this.password;
     }
 
     @BeforeInsert()

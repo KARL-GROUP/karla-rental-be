@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Car } from "./car.entity";
 import Model from "./model.entity";
 
@@ -31,12 +31,19 @@ export class Order extends Model {
   })
   status: string;
 
+  @Column({
+    type: "text",
+    nullable: true,
+  })
+  description!: string | null;
+
   @Column()
   startDate: Date;
 
   @Column()
   endDate: Date;
 
+  @BeforeUpdate()
   @BeforeInsert()
   async checkValidDates() {
     if (this.endDate < this.startDate)

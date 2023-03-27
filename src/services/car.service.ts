@@ -3,7 +3,7 @@ import { CreateCarInput } from "../schemas/car.schema";
 import { AppDataSource } from "../utils/data-source";
 
 // export const createCar = async (params: type) => {};
-const carRepository = AppDataSource.getRepository(Car);
+export const carRepository = AppDataSource.getRepository(Car);
 
 export const createCar = async (input: CreateCarInput) => {
   return (await AppDataSource.manager.save(
@@ -19,9 +19,18 @@ export const findCars = async (query: object) => {
   return await carRepository.find({
     where: { ...query },
     relations: {
-      categories: true,
+      tags: true,
     },
   });
+};
+
+export const selectionModelYears = async (query: object) => {
+  return await carRepository
+    .createQueryBuilder()
+    .select("Car.year")
+    .where({...query})
+    .distinctOn(["Car.year"])
+    .getMany();
 };
 
 export const findCar = async (query: object) => {

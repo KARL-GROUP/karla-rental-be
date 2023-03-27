@@ -1,16 +1,13 @@
 import {
-  BaseEntity,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
-  PrimaryColumn,
 } from "typeorm";
 import { Car } from "./car.entity";
 import Model from "./model.entity";
 
-@Entity("categories")
-export class Category extends Model {
+@Entity("tags")
+export class Tag extends Model {
   @Column({
     unique: true,
   })
@@ -23,8 +20,9 @@ export class Category extends Model {
   })
   description!: string | null;
 
-  @ManyToMany((type) => Car, (car) => car.categories, {
+  @ManyToMany((type) => Car, (car) => car.tags, {
     nullable: true,
+    onDelete:"CASCADE",
   })
   cars: Car[];
 }

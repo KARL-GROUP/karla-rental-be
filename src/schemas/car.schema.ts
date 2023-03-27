@@ -1,7 +1,7 @@
-import { any, array, number, object, string, TypeOf, z } from "zod";
+import { any, array, boolean, number, object, string, TypeOf, z } from "zod";
 import { TransmissionTypes } from "../entities/car.entity";
-import { Category } from "../entities/category.entity";
-import { categoryRepository } from "../services/category.service";
+import { Tag } from "../entities/tag.entity";
+import { tagRepository } from "../services/tag.service";
 import { toNumber } from "../utils/zod";
 
 const ACCEPTED_IMAGE_TYPES = [
@@ -34,53 +34,82 @@ export const imageSchema = object({
 
 export const createCarDBSchema = object({
   body: object({
-    name: string({
-      required_error: "Name is required",
+    brand: string({
+      required_error: "Brand mame is required",
+    }),
+    model: string({
+      required_error: "Model mame is required",
+    }),
+    year: number({
+      required_error: "Year is required",
     }),
     description: string().nullable().optional(),
-    plate: string({
-      required_error: "Car's plate number is required",
+    type: string({
+      required_error: "Car type is required",
     }),
     transmission: z.nativeEnum(TransmissionTypes),
-    price: number({
-      required_error: "Price is required",
-    }),
     seats: number({
       required_error: "Number of seats is required",
     }),
-    categories: any().array().optional(),
+    price: number({
+      required_error: "Price is required",
+    }),
+    display: boolean().optional().default(false),
+    tags: any().array().optional(),
+    coverImage: imageSchema,
     carImages: imageSchema.array(),
   }),
 });
 
 export const createCarSchema = object({
   body: object({
-    name: string({
-      required_error: "Name is required",
+    carImages: any().nullable().optional(),
+    brand: string({
+      required_error: "Brand mame is required",
     }),
+    model: string({
+      required_error: "Model mame is required",
+    }),
+    year: z.preprocess(
+      toNumber,
+      z.number({
+        required_error: "Model year is required",
+      })
+    ),
     description: string().nullable().optional(),
-    plate: string({
-      required_error: "Car's plate number is required",
+    type: string({
+      required_error: "Car type is required",
     }),
     transmission: z.nativeEnum(TransmissionTypes),
-    price: z.preprocess(toNumber, z.number({
-      required_error:"Price is required"
-    })),
-    seats: z.preprocess(toNumber, z.number({
-      required_error:"Number of seats is required"
-    })),
-    category: string().array().nullable().optional(),
-    carImages: any().nullable().optional(),
+    seats: z.preprocess(
+      toNumber,
+      z.number({
+        required_error: "Number of seats is required",
+      })
+    ),
+    price: z.preprocess(
+      toNumber,
+      z.number({
+        required_error: "Price is required",
+      })
+    ),
+    display: boolean().optional().nullable(),
+    tags: string().array().nullable().optional(),
   }),
 });
 
-export const getCarsQuerySchema = object({
+export const getCarsSchema = object({
   query: object({
-    name: string().optional(),
-    categories: string().array().optional(),
+    brand: string().optional(),
+    model: string().optional(),
+    year: z.preprocess(toNumber, z.number().optional()).optional(),
+    type: string().optional(),
     transmission: z.nativeEnum(TransmissionTypes).optional(),
-    seats: z.preprocess(toNumber, z.number().optional()),
-    price: z.preprocess(toNumber, z.number().optional()),
+    seats: z.preprocess(toNumber, z.number().optional()).optional(),
+    minPrice: z.preprocess(toNumber, z.number().optional()).optional(),
+    maxPrice: z.preprocess(toNumber, z.number().optional()).optional(),
+    tags: string().array().optional(),
+    display: boolean().optional(),
   })
     .optional()
     .nullable(),
