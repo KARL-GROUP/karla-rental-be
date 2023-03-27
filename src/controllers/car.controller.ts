@@ -85,18 +85,12 @@ export const createCarHandler = async (
     var uploads: any = [];
 
     if (req.files) {
-      for (const image of req.files as Express.Multer.File[]) {
-        const imageUpload = await cloudinary.uploader.upload(image.path, {
-          folder: "karl-rental/cars",
-        });
-
-        uploads.push({
-          public_id: imageUpload.public_id,
-          url: imageUpload.secure_url,
-        });
-
-        fs.unlinkSync(image.path);
-      }
+      uploads = (req.files as Express.Multer.File[]).map(
+        (image: Express.Multer.File) => ({
+          public_id: image.filename,
+          url: image.path,
+        })
+      );
     }
 
     var assignedTags = [];

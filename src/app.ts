@@ -34,7 +34,7 @@ AppDataSource.initialize()
       })
     );
     app.use(bodyParser.json());
-    app.use(upload.any());
+    // app.use(upload.any());
 
     // 2. Logger
     if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
@@ -68,14 +68,10 @@ AppDataSource.initialize()
       });
     });
 
-    app.get("/api/trial", async (_, res: Response) => {
-      const years = await carRepository
-        .createQueryBuilder()
-        .select("Car.year")
-        .distinctOn(['Car.year'])
-        .getMany();
+    app.get("/api/trial", async (req, res: Response) => {
+      // const images = req.files;
 
-      res.status(200).send(years.map((val) => val.year));
+      res.status(200).json({ message: "working" });
       // return years;
     });
 

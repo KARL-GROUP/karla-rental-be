@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", getTagsHandler);
 
-// router.use(deserializeUser, requireUser);
+router.use(deserializeUser, requireUser);
 
 router.post("/", validate(createTagSchema), createTagHandler);
 
