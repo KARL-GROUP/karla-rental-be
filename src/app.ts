@@ -11,6 +11,7 @@ import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
 import tagRouter from "./routes/tag.routes";
 import carRouter from "./routes/car.routes";
+import orderRouter from "./routes/order.routes";
 import AppError from "./utils/appError";
 import upload from "./utils/multer";
 import bodyParser from "body-parser";
@@ -50,6 +51,7 @@ AppDataSource.initialize()
       })
     );
 
+
     // 5. Documentation
     app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
@@ -58,6 +60,7 @@ AppDataSource.initialize()
     app.use("/api/users", userRouter);
     app.use("/api/tags", tagRouter);
     app.use("/api/cars", carRouter);
+    app.use("/api/orders", orderRouter);
 
     // HEALTH CHECKER
     app.get("/api/healthchecker", async (_, res: Response) => {

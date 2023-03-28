@@ -115,4 +115,13 @@ export const getCarsSchema = object({
     .nullable(),
 });
 
+export const deleteCarSchema = object({
+  params: object({
+    id: z.string({
+      required_error: "Car id must be provided in params!",
+    }),
+  }),
+});
+
+
 export type CreateCarInput = TypeOf<typeof createCarDBSchema>["body"];

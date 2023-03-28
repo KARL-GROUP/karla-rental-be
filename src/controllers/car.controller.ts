@@ -4,14 +4,33 @@ import {
   findCars,
   findCarById,
   selectionModelYears,
+  findCarOrders,
 } from "../services/car.service";
 import { createTag, findTagByName } from "../services/tag.service";
 import AppError from "../utils/appError";
-import cloudinary from "../utils/cloudinary";
-import * as fs from "fs";
 import { Car } from "../entities/car.entity";
-import { toNumber } from "../utils/zod";
 import { Equal, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
+
+export const getCarHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const car = await findCarOrders(req.params.id);
+
+    if (!car) {
+      return next(new AppError(404, "Car with that :id not found"));
+    }
+
+    res.status(200).json({
+      staus: "success",
+      data: car,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const getCarsHandler = async (
   req: Request,
@@ -71,7 +90,6 @@ export const getCarsHandler = async (
       },
     });
   } catch (err: any) {
-    console.log(err);
     next(err);
   }
 };
@@ -129,10 +147,6 @@ export const deleteCarHandler = async (
   next: NextFunction
 ) => {
   try {
-    const carId = req.params.id;
-    if (!carId) {
-      return next(new AppError(400, "No car id provided"));
-    }
     const car = await findCarById(req.params.id);
 
     if (!car) {

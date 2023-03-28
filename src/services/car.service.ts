@@ -15,6 +15,13 @@ export const findCarById = async (carId: string) => {
   return await carRepository.findOneBy({ id: carId });
 };
 
+export const findCarOrders = async (carId: string) => {
+  return await carRepository.findOne({
+    where: { id: carId },
+    relations: { orders: true },
+  });
+};
+
 export const findCars = async (query: object) => {
   return await carRepository.find({
     where: { ...query },
@@ -28,7 +35,7 @@ export const selectionModelYears = async (query: object) => {
   return await carRepository
     .createQueryBuilder()
     .select("Car.year")
-    .where({...query})
+    .where({ ...query })
     .distinctOn(["Car.year"])
     .getMany();
 };

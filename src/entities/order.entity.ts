@@ -1,4 +1,13 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { type } from "os";
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from "typeorm";
+import { nullable } from "zod";
 import { Car } from "./car.entity";
 import Model from "./model.entity";
 
@@ -8,7 +17,12 @@ export enum orderStatus {
   DECLINED = "declined",
 }
 
-@Entity('orders')
+export enum IdType {
+  PASSPORT = "passport",
+  NATIONAL_ID = "national",
+}
+
+@Entity("orders")
 export class Order extends Model {
   @ManyToOne(() => Car, (car) => car.orders, {
     onDelete: "CASCADE",
@@ -17,6 +31,18 @@ export class Order extends Model {
     name: "car_id",
   })
   car: Car;
+
+  @Column({
+    type: "jsonb",
+    nullable: false,
+  })
+  customerId: {
+    type: IdType;
+    value: string;
+  };
+
+  @Column()
+  fullName: string;
 
   @Column()
   email: string;
