@@ -19,9 +19,9 @@ const router = express.Router();
 
 router.get("/", validate(getCarsSchema), getCarsHandler);
 
-router.use(deserializeUser, requireUser);
-
 router.get("/:id", validate(deleteCarSchema), getCarHandler);
+
+router.use(deserializeUser, requireUser);
 
 router.delete("/:id", validate(deleteCarSchema), deleteCarHandler);
 

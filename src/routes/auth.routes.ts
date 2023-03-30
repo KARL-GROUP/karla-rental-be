@@ -20,7 +20,7 @@ router.post('/register', validate(createUserSchema), registerUserHandler);
 router.post('/login', validate(loginUserSchema), loginUserHandler);
 
 // ChangePassword
-router.put('/changepassword', validate(changePasswordSchema), deserializeUser, requireUser, changePasswordHandler);
+router.put('/changePassword', validate(changePasswordSchema), deserializeUser, requireUser, changePasswordHandler);
 
 // Logout user
 router.get('/logout', deserializeUser, requireUser, logoutHandler);

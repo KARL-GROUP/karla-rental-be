@@ -13,11 +13,9 @@ import tagRouter from "./routes/tag.routes";
 import carRouter from "./routes/car.routes";
 import orderRouter from "./routes/order.routes";
 import AppError from "./utils/appError";
-import upload from "./utils/multer";
 import bodyParser from "body-parser";
-import { carRepository } from "./services/car.service";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from "../openapi.json";
+import { swaggerDoc } from "./docs/swagger";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -35,7 +33,6 @@ AppDataSource.initialize()
       })
     );
     app.use(bodyParser.json());
-    // app.use(upload.any());
 
     // 2. Logger
     if (process.env.NODE_ENV === "development") app.use(morgan("dev"));

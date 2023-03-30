@@ -52,7 +52,7 @@ export const updateOrderSchema = object({
     }),
   }),
   body: object({
-    status: z.nativeEnum(orderStatus),
+    status: z.nativeEnum(orderStatus).optional(),
     car: z.string().optional(),
     fullName: z.string().optional(),
     email: z.string().email().optional(),
