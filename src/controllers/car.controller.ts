@@ -5,11 +5,13 @@ import {
   findCarById,
   selectionModelYears,
   findCarOrders,
+  updateCar,
 } from "../services/car.service";
 import { createTag, findTagByName } from "../services/tag.service";
 import AppError from "../utils/appError";
 import { Car } from "../entities/car.entity";
 import { Equal, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
+import cloudinary from "../utils/cloudinary";
 
 export const getCarHandler = async (
   req: Request,
@@ -26,6 +28,69 @@ export const getCarHandler = async (
     res.status(200).json({
       staus: "success",
       data: car,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const addImageHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    var car = await findCarById(req.params.id);
+
+    if (!car) {
+      return next(new AppError(404, "Car with that :id not found"));
+    }
+
+    if (req.files) {
+      const uploads = (req.files as Express.Multer.File[]).map(
+        (image: Express.Multer.File) => ({
+          public_id: image.filename,
+          url: image.path,
+        })
+      );
+
+      car.carImages = car.carImages.concat(uploads);
+    }
+
+    car.save();
+
+    res.status(200).json({
+      staus: "success",
+      data: car.carImages,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteImageHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    var car = await findCarById(req.params.id);
+
+    if (!car) {
+      return next(new AppError(404, "Car with that :id not found"));
+    }
+
+    const carImages = req.body.carImages;
+    for (var image of carImages) {
+      car.carImages = car.carImages.filter((data) => data.url !== image.url);
+      cloudinary.uploader.destroy(image.public_id);
+    }
+
+    car.save();
+
+    res.status(200).json({
+      staus: "success",
+      data: car.carImages,
     });
   } catch (err) {
     next(err);
@@ -87,6 +152,45 @@ export const getCarsHandler = async (
       data: {
         cars: cars,
         years: years,
+      },
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const updateCarHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    var assignedTags = [];
+    if (req.body.tags) {
+      for (var tag of req.body.tags) {
+        const newTag = await findTagByName(tag);
+        if (newTag) assignedTags.push(newTag);
+        else {
+          const createdTag = await createTag({ name: tag });
+          assignedTags.push(createdTag);
+        }
+      }
+      var updatedCar = await findCarById(req.params.id);
+      if (updatedCar) {
+        updatedCar.tags = updatedCar.tags.concat(assignedTags!);
+        updatedCar.save();
+      }
+    }
+
+    delete req.body["tags"];
+    var car = await updateCar(req.params.id, {
+      ...req.body,
+    });
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        car,
       },
     });
   } catch (err: any) {

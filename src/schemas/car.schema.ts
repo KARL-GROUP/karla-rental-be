@@ -115,7 +115,81 @@ export const getCarsSchema = object({
     .nullable(),
 });
 
-export const deleteCarSchema = object({
+export const updateCarSchema = object({
+  params: object({
+    id: z.string({
+      required_error: "Car id must be provided in params!",
+    }),
+  }),
+  body: object({
+    brand: string({
+      required_error: "Brand mame is required",
+    }).optional(),
+    model: string({
+      required_error: "Model mame is required",
+    }).optional(),
+    year: z
+      .preprocess(
+        toNumber,
+        z
+          .number({
+            required_error: "Model year is required",
+          })
+          .optional()
+      )
+      .optional(),
+    description: string().nullable().optional(),
+    type: string({
+      required_error: "Car type is required",
+    }).optional(),
+    transmission: z.nativeEnum(TransmissionTypes).optional(),
+    seats: z
+      .preprocess(
+        toNumber,
+        z.number({
+          required_error: "Number of seats is required",
+        })
+      )
+      .optional(),
+    price: z
+      .preprocess(
+        toNumber,
+        z
+          .number({
+            required_error: "Price is required",
+          })
+          .optional()
+      )
+      .optional(),
+    coverImage: imageSchema.optional(),
+    display: boolean().optional().nullable(),
+    tags: string().array().nullable().optional(),
+  }),
+});
+
+export const addCarImageSchema = object({
+  params: object({
+    id: z.string({
+      required_error: "Car id must be provided in params!",
+    }),
+  }),
+  body: object({
+    carImages: imageSchema.array(),
+  }),
+});
+
+export const carImageActionSchema = object({
+  params: object({
+    id: z.string({
+      required_error: "Car id must be provided in params!",
+    }),
+  }),
+  body: object({
+    carImages: imageSchema.array(),
+  }),
+});
+
+export const carParamSchema = object({
   params: object({
     id: z.string({
       required_error: "Car id must be provided in params!",
@@ -123,5 +197,6 @@ export const deleteCarSchema = object({
   }),
 });
 
-
 export type CreateCarInput = TypeOf<typeof createCarDBSchema>["body"];
+
+export type ImageType = TypeOf<typeof imageSchema>;

@@ -25,10 +25,10 @@ const options: swaggerJsdoc.Options = {
     ],
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "https://karla-rental-be-development.up.railway.app",
       },
       {
-        url: "https://karla-rental-be-development.up.railway.app",
+        url: "http://localhost:3000",
       },
     ],
   },

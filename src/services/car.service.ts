@@ -12,7 +12,12 @@ export const createCar = async (input: CreateCarInput) => {
 };
 
 export const findCarById = async (carId: string) => {
-  return await carRepository.findOneBy({ id: carId });
+  return await carRepository.findOne({
+    where: { id: carId },
+    relations: {
+      tags: true,
+    },
+  });
 };
 
 export const findCarOrders = async (carId: string) => {
@@ -42,4 +47,8 @@ export const selectionModelYears = async (query: object) => {
 
 export const findCar = async (query: object) => {
   return await carRepository.findOneBy(query);
+};
+
+export const updateCar = async (carId: string, query: object) => {
+  return await carRepository.save({ id: carId, ...query });
 };

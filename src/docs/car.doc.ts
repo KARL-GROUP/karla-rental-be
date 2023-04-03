@@ -28,6 +28,25 @@
  *      '401':
  *        description: Not authorized
  * /api/cars/{id}:
+ *  put:
+ *    tags:
+ *      - cars
+ *    summary: Edit car details
+ *    security:
+ *       - bearerAuth: []
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/UpdateCarSchema'
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ *      '401':
+ *        description: Not authorized
  *  get:
  *    tags:
  *      - cars
@@ -58,6 +77,64 @@
  *          type: string
  *          format: uuid
  *          example: f570a575-291f-479a-a485-e97281c889fd
+ *    responses:
+ *      '204':
+ *        description: Successful operation
+ * /api/cars/{id}/images:
+ *  post:
+ *    tags:
+ *      - images
+ *    security:
+ *       - bearerAuth: []
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: Car id to add images
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *          example: f570a575-291f-479a-a485-e97281c889fd
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              carImages:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: binary
+ *    responses:
+ *      '204':
+ *        description: Successful operation
+ *  delete:
+ *    tags:
+ *      - images
+ *    security:
+ *       - bearerAuth: []
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: Car id to delete images
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *          example: f570a575-291f-479a-a485-e97281c889fd
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              carImages:
+ *                type: array
+ *                items:
+ *                  $ref: '#/components/schemas/ImageSchema'
  *    responses:
  *      '204':
  *        description: Successful operation
