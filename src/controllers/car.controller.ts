@@ -19,6 +19,27 @@ export const getCarHandler = async (
   next: NextFunction
 ) => {
   try {
+    const car = await findCarById(req.params.id);
+
+    if (!car) {
+      return next(new AppError(404, "Car with that :id not found"));
+    }
+
+    res.status(200).json({
+      staus: "success",
+      data: car,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCarOrdersHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
     const car = await findCarOrders(req.params.id);
 
     if (!car) {

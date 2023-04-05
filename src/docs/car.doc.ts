@@ -32,6 +32,15 @@
  *    tags:
  *      - cars
  *    summary: Edit car details
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: Car id to retrieve
+ *        required: true
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *          example: f570a575-291f-479a-a485-e97281c889fd
  *    security:
  *       - bearerAuth: []
  *    requestBody:

@@ -24,6 +24,5 @@ export const findOrderById = async (orderId: string) => {
 };
 
 export const updateOrder = async (orderId: string, query: object) => {
-  return await orderRepository.save({ id: orderId }, { ...query });
+  return await orderRepository.save({ id: orderId, ...query });
 };
-

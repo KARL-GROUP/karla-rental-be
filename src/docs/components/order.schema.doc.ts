@@ -47,7 +47,7 @@
  *        - type
  *        - value
  *      properties:
- *        public_id:
+ *        type:
  *          type: string
  *          enum: ['passport', 'national']
  *          default: national
@@ -56,6 +56,7 @@
  *    CreateOrderSchema:
  *      type: object
  *      required:
+ *        - car
  *        - fullName
  *        - customerId
  *        - email
@@ -64,11 +65,43 @@
  *        - startDate
  *        - endDate
  *      properties:
+ *        car:
+ *          type: string
+ *          format: uuid
  *        fullName:
  *          type: string
  *          default: Someone
  *        customerId:
  *          $ref: '#/components/schemas/CustomerIdSchema'
+ *        phone:
+ *          type: string
+ *          default: +250780000000
+ *        email:
+ *          type: string
+ *          format: email
+ *        description:
+ *          type: string
+ *          default: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat
+ *        startDate:
+ *          type: string
+ *          format: date
+ *        endDate:
+ *          type: string
+ *          format: date
+ *    UpdateOrderSchema:
+ *      type: object
+ *      properties:
+ *        car:
+ *          type: string
+ *          format: uuid
+ *        fullName:
+ *          type: string
+ *          default: Someone
+ *        customerId:
+ *          $ref: '#/components/schemas/CustomerIdSchema'
+ *        phone:
+ *          type: string
+ *          default: +250780000000
  *        email:
  *          type: string
  *          format: email

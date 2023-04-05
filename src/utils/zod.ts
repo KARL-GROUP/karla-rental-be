@@ -11,3 +11,11 @@ export function toNumber(str: unknown) {
 
   return str;
 }
+
+// export function toDate(str: unknown) {
+//   if (typeof str === typeof new Date()) {
+//     return str;
+//   }
+
+//   return str? new Date(str): unde
+// }

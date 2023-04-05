@@ -21,7 +21,7 @@ router.get("/", validate(getOrdersSchema), getOrdersHnadler);
 
 router.use(deserializeUser, requireUser);
 
-router.post("/:carId", validate(newOrderSchema), createOrderHnadler);
+router.post("/", validate(newOrderSchema), createOrderHnadler);
 
 router.put("/:orderId", validate(updateOrderSchema), updateOrderHandler);
 

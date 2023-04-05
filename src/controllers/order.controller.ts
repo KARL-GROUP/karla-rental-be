@@ -15,7 +15,7 @@ export const createOrderHnadler = async (
   next: NextFunction
 ) => {
   try {
-    const chosenCar = await findCarById(req.params.carId);
+    const chosenCar = await findCarById(req.body.car);
     if (!chosenCar) {
       return next(
         new AppError(404, "Requested car does not exist in the database!")
@@ -23,7 +23,7 @@ export const createOrderHnadler = async (
     }
 
     const order = await createOrder({
-      chosenCar,
+      car: chosenCar,
       ...req.body,
     });
 
@@ -81,12 +81,14 @@ export const updateOrderHandler = async (
   try {
     var options: any = req.body;
     if ("car" in options) {
-      const chosenCar = await findCarById(options.carId);
+      const chosenCar = await findCarById(options.car);
       if (!chosenCar) {
         return next(
           new AppError(404, "Requested car does not exist in the database!")
         );
       }
+
+      options.car = chosenCar;
     }
 
     const newOrder = updateOrder(req.params.orderId, options);

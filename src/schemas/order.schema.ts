@@ -1,16 +1,18 @@
 import { type } from "os";
 import { object, TypeOf, z } from "zod";
 import { IdType, orderStatus } from "../entities/order.entity";
+import { Car } from "../entities/car.entity";
 
-const checkValidDates = (startDate: Date, endDate: Date) => {
-  return startDate < new Date(Date.now()) || startDate > endDate;
+const checkValidDates = (startDate: string | Date, endDate: string | Date) => {
+  return (
+    z.date().safeParse(startDate) < z.date().safeParse(new Date(Date.now())) ||
+    startDate < endDate
+  );
 };
 
 export const newOrderSchema = object({
-  params: object({
-    carId: z.string({ required_error: "Ordered car id must be provided!" }),
-  }),
   body: object({
+    car: z.string({ required_error: "Ordered car id must be provided!" }),
     fullName: z.string({
       required_error: "Customer full name must be provided!",
     }),
@@ -23,8 +25,43 @@ export const newOrderSchema = object({
       .email("Invalid email address"),
     phone: z.string({ required_error: "Phone number must be provided!" }),
     description: z.string().nullable().optional(),
-    startDate: z.date({ required_error: "start date must be provided" }),
-    endDate: z.date({ required_error: "end date must be provided" }),
+    startDate: z
+      .date({ required_error: "start date must be provided" })
+      .or(
+        z.string({ required_error: "start date must be provided" }).datetime()
+      ),
+    endDate: z
+      .date({ required_error: "end date must be provided" })
+      .or(z.string({ required_error: "end date must be provided" }).datetime()),
+  }).refine(
+    (data) => checkValidDates(data.startDate, data.endDate),
+    "Invalid dates were provided!"
+  ),
+});
+
+export const newOrderDBSchema = object({
+  body: object({
+    car: z.instanceof(Car),
+    fullName: z.string({
+      required_error: "Customer full name must be provided!",
+    }),
+    customerId: object({
+      type: z.nativeEnum(IdType),
+      value: z.string({ required_error: "Customer Id not provided" }),
+    }),
+    email: z
+      .string({ required_error: "Email must be provided!" })
+      .email("Invalid email address"),
+    phone: z.string({ required_error: "Phone number must be provided!" }),
+    description: z.string().nullable().optional(),
+    startDate: z
+      .date({ required_error: "start date must be provided" })
+      .or(
+        z.string({ required_error: "start date must be provided" }).datetime()
+      ),
+    endDate: z
+      .date({ required_error: "end date must be provided" })
+      .or(z.string({ required_error: "end date must be provided" }).datetime()),
   }).refine(
     (data) => checkValidDates(data.startDate, data.endDate),
     "Invalid dates were provided!"
@@ -58,11 +95,11 @@ export const updateOrderSchema = object({
     email: z.string().email().optional(),
     phone: z.string().optional(),
     customerId: object({
-      type: z.nativeEnum(IdType).optional(),
-      value: z.string().optional(),
+      type: z.nativeEnum(IdType),
+      value: z.string(),
     }).optional(),
-    startDate: z.date().optional(),
-    endDate: z.date().optional(),
+    startDate: z.date().or(z.string().datetime()).optional(),
+    endDate: z.date().or(z.string().datetime()).optional(),
   }),
 });
 
@@ -74,4 +111,4 @@ export const deleteOrderSchema = object({
   }),
 });
 
-export type newOrderInput = TypeOf<typeof newOrderSchema>["body"];
+export type newOrderInput = TypeOf<typeof newOrderDBSchema>["body"];
