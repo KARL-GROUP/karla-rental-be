@@ -17,11 +17,11 @@ import {
 
 const router = express.Router();
 
-router.get("/", validate(getOrdersSchema), getOrdersHnadler);
+router.post("/", validate(newOrderSchema), createOrderHnadler);
 
 router.use(deserializeUser, requireUser);
 
-router.post("/", validate(newOrderSchema), createOrderHnadler);
+router.get("/", validate(getOrdersSchema), getOrdersHnadler);
 
 router.put("/:orderId", validate(updateOrderSchema), updateOrderHandler);
 

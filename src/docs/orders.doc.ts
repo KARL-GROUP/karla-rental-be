@@ -5,15 +5,17 @@
  *    tags:
  *      - orders
  *    description: Returns the list of orders present in the database
+ *    security:
+ *       - bearerAuth: []
  *    responses:
  *      '200':
  *        description: Successful operation
+ *      '401':
+ *        description: Not authorized
  *  post:
  *    tags:
  *      - orders
- *    summary: Add a new car to the database
- *    security:
- *       - bearerAuth: []
+ *    summary: Add a new order
  *    requestBody:
  *      required: true
  *      content:
